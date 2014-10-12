@@ -97,110 +97,68 @@
 				<section>
                                   <h2>The Problem...</h2>
                                         <p>
-                                          Map Reduce reads from, and stores to HDFS
+                                          Approaches like MapReduce read from, and store to HDFS
                                         </p>
                                           <img src="images/map_reduce_flow.jpg"></img>
-                                          ...so each MapReduce incurs latency from HDFS reads 
+                                          ...so each cycle of incurs latency from HDFS reads 
                                         </p> 
 				</section>
 
 				<section>
-					<h2>Works in Mobile Safari</h2>
-					<p>
-						Try it out! You can swipe through the slides and pinch your way to the overview.
-					</p>
+					<h2>This Makes things tougher for...</h2>
+				        <ul>
+                                          <li class="fragment">Iterative queries</li>
+                                          <li class="fragment">Interactive queries</li>
+                                          <li class="fragment">Machine Learning</li>
+                                        </ul>
+                                </section>
+
+                                <section>
+                                  <h2>There are existing solutions...</h2>
+                                    <p>But each tend to solve a specialized problem, and all allow "fine-grain" (cell level) updates</p>
+                                    <p>Fine-grain updates complicate fault tolerance</p> 
+                                </section>                                 
+ 
+				<section>
+					<h2>Spark performs calculations in-memory</h2>
+				          <p>Think of it as in-memory MapReduce</p>
+                                          <p>The key to this is a new data abstraction...</p>
+                                </section>
+
+				<section>
+					<h2>RDD</h2>
+				        <p>A Resilient Distributed Dataset (RDD) is an an immutable, partioned record that supports basic operations (e.g. map, filter, join). It maintains a graph of transformations in order to enable recovery of a lost partition</p>
+                                        <p><small>*See the RDD <a href="https://www.cs.berkeley.edu/~matei/papers/2012/nsdi_spark.pdf">white paper</a> for more details</small></p>
+                                </section>
+
+				<section>
+                                  <h2>Lineage Transformation</h2>
+                                  <img src="images/Lineage.png"></img>
 				</section>
 
 				<section>
-					<h2>Marvelous Unordered List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
+					<h2>RDDs are Expressive</h2> 
+					<p>
+                                          It turns out that coars-grained operations cover many existing parrallel computing cases
+					</p>
+                                        <p>
+                                          Consequently, the RDD abstraction can implement existing systems like MapReduce, Pregel, Dryad, etc.
 				</section>
 
 				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
-				</section>
-
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						For those of you who like that sort of thing. Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-
-						```
-						<section data-markdown>
-						  ## Markdown support
-
-						  For those of you who like that sort of thing.
-						  Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=cube#/transitions">Cube</a> -
-						<a href="?transition=page#/transitions">Page</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a> -
-						<a href="?transition=linear#/transitions">Linear</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?#/transitions">Default</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						Reveal.js comes with a few themes built in: <br>
-						<a href="?#/themes">Default</a> -
-						<a href="?theme=sky#/themes">Sky</a> -
-						<a href="?theme=beige#/themes">Beige</a> -
-						<a href="?theme=simple#/themes">Simple</a> -
-						<a href="?theme=serif#/themes">Serif</a> -
-						<a href="?theme=night#/themes">Night</a> <br>
-						<a href="?theme=moon#/themes">Moon</a> -
-						<a href="?theme=solarized#/themes">Solarized</a>
-					</p>
-					<p>
-						<small>
-							* Theme demos are loaded after the presentation which leads to flicker. In production you should load your theme in the <code>&lt;head&gt;</code> using a <code>&lt;link&gt;</code>.
-						</small>
-					</p>
+					<h2>Spark Cluster Overview</h2>
+					<img src="images/cluster-overview.png"></img>
+                                        <p><small>Spark can be run with Apache Mesos, HADOOP Yarn, or it's own standalone cluster manager</small></p>
 				</section>
 
 				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the background.
-					</p>
+					<h2>Job Scheduling and Stages</h2>
+                                        <img src="images/job-scheduling.png"></img> 
 				</section>
 
-				<section data-state="customevent">
-					<h2>Custom Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
+				<section>
+					<h2>Spark and Cassandra</h2>
+                                        <p>
 				</section>
 
 				<section>
