@@ -100,18 +100,9 @@
                                           Approaches like MapReduce read from, and store to HDFS
                                         </p>
                                           <img src="images/map_reduce_flow.jpg"></img>
-                                          ...so each cycle of incurs latency from HDFS reads 
+                                          ...so each cycle of processing incurs latency from HDFS reads 
                                         </p> 
 				</section>
-
-				<section>
-					<h2>This Makes things tougher for...</h2>
-				        <ul>
-                                          <li class="fragment">Iterative queries</li>
-                                          <li class="fragment">Interactive queries</li>
-                                          <li class="fragment">Machine Learning</li>
-                                        </ul>
-                                </section>
 
                                 <section>
                                   <h2>There are existing solutions...</h2>
@@ -120,9 +111,9 @@
                                 </section>                                 
  
 				<section>
-					<h2>Spark performs calculations in-memory</h2>
-				          <p>Think of it as in-memory MapReduce</p>
-                                          <p>The key to this is a new data abstraction...</p>
+					<h2>Spark performs operations in-memory</h2>
+				          <p>Think of it as MapReduce where intermediate results are kept in memory</p>
+                                          <p>The key to making this work is a new data abstraction...</p>
                                 </section>
 
 				<section>
@@ -158,34 +149,33 @@
 
 				<section>
 					<h2>Spark and Cassandra</h2>
-                                        <p>
+                                        <p>If we can turn Cassandra data into RDDs, and RDDs into Cassandra data, then the data can start flowing between the two systems and giving us some insight into our data.</p>
+                                        <p> <a href="https://github.com/datastax/spark-cassandra-connector">The Spark Cassandra Connector</a> allows us to perform the transformation from Cassadra table to RDD and then back again!</p>
 				</section>
 
-				<section>
-					<section data-background="#007777">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#007777"</code> on a slide to change the full page background to the given color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="image navigate-down">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Repeated Image Backgrounds</h2>
-						<pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-				</section>
+                                <section>
+                                        <h2>From Cassandra Table to RDD</h2>
+                                        <pre><code data-trism>
+import org.apache.spark._
+import com.datastax.spark.connector._
 
-				<section data-transition="linear" data-background="#4d7e65" data-background-transition="slide">
-					<h2>Background Transitions</h2>
-					<p>
-						Pass reveal.js the <code>backgroundTransition: 'slide'</code> config argument to make backgrounds slide rather than fade.
-					</p>
+val rdd = sc.cassandraTable("music", "albums_by_artist")
+                                        </code></pre>
+                                        <p><small>Run these commands spark-shell, requires specifying the spark-connector jar on the commandline</small></p>
+                                </section>
+
+					<section>
+				          <h2>Simple MapReduce for RDD Column Count</h2>
+						<pre><code data-trim>
+val count = rdd.map(x => (x.get[String]("recordlabel"),1)).reduceByKey(_ + _)                                              
+</code></pre>
+					</section>
+					<section>
+				          <h2>Save the RDD to Cassandra</h2>
+                                          <pre><code data-trim>
+count.saveToCassandra("music", "labelcount",SomeColumns("label", "count")
+</code></pre>
+					</section>
 				</section>
 
 				<section data-transition="linear" data-background="#8c4738" data-background-transition="slide">
