@@ -85,12 +85,14 @@
 
 				<section>
 				    <h2>What is Spark?</h2>
-                                      <blockquote class="fragment" cite="https://spark.apache.org/">
+                                      <blockquote cite="https://spark.apache.org/">
                                       Apache Spark™ is a fast and general engine for large-scale data processing.    
                                       </blockquote> 
-				      <blockquote class="fragment" cite="">
-                                        Run programs up to 100x faster than Hadoop MapReduce in memory, or 10x faster on disk.
-                                      </blockquote>
+                                      <ul>
+                                        <li>Created by AMPLab at UC Berkeley</li>
+                                        <li>Became Apache Top-Level Project in 2014</li>
+                                        <li>Supports Scala, Java, and Python APIs</li>
+                                      </ul>
                                 </section>
 
 				<section>
@@ -126,8 +128,8 @@
 
 				<section>
                                   <h2>Transformations and Actions</h2>
-                                  <p> A "transformation" is an operation that can be lazily-evaluated (think "map")</p>
-                                  <p> An "action" requires immediate evaluation (think "count")
+                                  <p> "transformation" creates another RDD, is evaluated lazily</p>
+                                  <p> "action" returns a value, evaluated immediately</p>
 				</section>
           
 
@@ -146,12 +148,6 @@
                                         <p><small>Spark can be run with Apache Mesos, HADOOP Yarn, or it's own standalone cluster manager</small></p>
 				</section>
                                 
-
-                                <section>
-                                  <h2>Lineage Transformations</h2>
-                                  <img src="images/Lineage.png"></img>
-                                </section>
-
 				<section>
 					<h2>Job Scheduling and Stages</h2>
                                         <img src="images/job-scheduling.png"></img> 
@@ -162,6 +158,11 @@
                                         <p>If we can turn Cassandra data into RDDs, and RDDs into Cassandra data, then the data can start flowing between the two systems and give us some insight into our data.</p>
                                         <p> <a href="https://github.com/datastax/spark-cassandra-connector">The Spark Cassandra Connector</a> allows us to perform the transformation from Cassadra table to RDD and then back again!</p>
 				</section>
+                                
+                                <section>
+                                  <h2>The Setup</h2>
+                                  <img src="images/spark_setup.jpg"></img>
+                                </section>
 
                                 <section>
                                         <h2>From Cassandra Table to RDD</h2>
@@ -177,24 +178,55 @@ val rdd = sc.cassandraTable("music", "albums_by_artist")
 					<section>
 				          <h2>Simple MapReduce for RDD Column Count</h2>
 						<pre><code data-trim>
-val count = rdd.map(x => (x.get[String]("recordlabel"),1)).reduceByKey(_ + _)                                              
+val count = rdd.map(x => (x.get[String]("label"),1)).reduceByKey(_ + _)                                              
 </code></pre>
 					</section>
 					<section>
 				          <h2>Save the RDD to Cassandra</h2>
                                           <pre><code data-trim>
-count.saveToCassandra("music", "labelcount",SomeColumns("label", "count")
+count.saveToCassandra("music", "label_count",SomeColumns("label", "count"))
 </code></pre>
 					</section>
 				</section>
 
 				<section>
-					<h2>Joining Data</h2>
+					<h2>Cassandra with SparkSQL</h2>
+                                        <pre><code data-trim>
+import org.apache.spark.sql.cassandra.CassandraSQLContext
+
+val cc = new CassandraSQLContext(sc)
+val rdd = cc.sql("SELECT * from music.label_count")
+</code></pre>
 				</section>
 
 				<section>
-					<h2>SQL Queries with Spark SQL</h2>
+					<h2>Joins!!!</h2>
+                                        <pre><code data-trim>
+import sqlContext.createSchemaRDD
+import org.apache.spark.sql._
+
+case class LabelCount(label: String, count: Int)
+case class AlbumArtist(artist: String, album: String, label: String, year: Int)
+case class AlbumArtistCount(artist: String, album: String, label: String, year: Int, count: Int)
+
+val albumArtists = sc.cassandraTable[AlbumArtist]("music","albums_by_artists").cache
+val labelCounts = sc.cassandraTable[LabelCount]("music", "label_count").cache
+
+val albumsByLabelId = albumArtists.keyBy(x => x.label)
+val countsByLabelId = labelCounts.keyBy(x => x.label)
+
+val joinedAlbums = albumsByLabelId.join(countsByLabelId).cache
+val albumArtistCountObjects = joinedAlbums.map(x => (new AlbumArtistCount(x._2._1.artist, x._2._1.album, x._2._1.label, x._2._1.year, x._2._2.count)))
+</code></pre>
 				</section>
+                                
+                                <section>
+                                  <h2>Other Things to Check Out</h2>
+                                  <ul>
+                                    <li><a href="https://spark.apache.org/streaming/">Spark Streaming</a></li>
+                                    <li><a href="https://spark.apache.org/sql/">Spark SQL</a></li>
+                                  </ul>
+                                </section>
 
                                 <section>
                                   <h2>Questions?</h2> 
