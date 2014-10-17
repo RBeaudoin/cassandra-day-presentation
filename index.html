@@ -16,6 +16,7 @@
 
 		<link rel="stylesheet" href="css/reveal.min.css">
 		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+		<link rel="stylesheet" href="css/print/pdf.css">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -46,7 +47,7 @@
 					<h1>Feelin' the Flow</h1>
 					<h3>Getting your Data Moving with Spark and Cassandra</h3>
 					<p>
-						<small>Presented by <a href="http://about.me/rbeaudoin">Rich Beaudoin</a> / <a href="http://twitter.com/richgbeaudoin">@RichGBeaudoin</a>October 14th, 2014</small>
+						<small>Presented by <a href="https://www.linkedin.com/pub/rich-beaudoin/3b/b22/26">Rich Beaudoin</a> / <a href="http://twitter.com/richgbeaudoin">@RichGBeaudoin</a>October 14th, 2014</small>
 					</p>
 				</section>
 
@@ -54,7 +55,7 @@
 					<h2>About me...</h2>
                                         <ul>
                                                 <li>Sr. Software Engineer at Pearson</li>
-                                                <li>Organizer of <a href="">Distributed Computing Denver</a></li>
+                                                <li>Organizer of <a href="http://www.meetup.com/Distributed-Computing-Denver/">Distributed Computing Denver</a></li>
                                                 <li>Lover of Music</li>
                                                 <li>All around solid dude</li>
                                         </ul>
@@ -122,7 +123,7 @@
 
 				<section>
 					<h2>RDD</h2>
-				        <p>A Resilient Distributed Dataset (RDD) is an an immutable, partioned record that supports basic operations (e.g. map, filter, join). It maintains a graph of transformations in order to enable recovery of a lost partition</p>
+				        <blockquote cite="https://www.cs.berkeley.edu/~matei/papers/2012/nsdi_spark.pdf">A Resilient Distributed Dataset (RDD) is an an immutable, partioned record that supports basic operations (e.g. map, filter, join). It maintains a graph of transformations in order to enable recovery of a lost partition</blockquote>
                                         <p><small>*See the RDD <a href="https://www.cs.berkeley.edu/~matei/papers/2012/nsdi_spark.pdf">white paper</a> for more details</small></p>
                                 </section>
 
@@ -236,8 +237,11 @@ val albumArtistCountObjects = joinedAlbums.map(x => (new AlbumArtistCount(x._2._
 					<h1>THE END</h1>
                                         <p>References</p>
                                         <ul>
+                                          <li><a href="https://www.cs.berkeley.edu/~matei/papers/2012/nsdi_spark.pdf">Resilient Distributed Datasets: A Fault-Tolerant Abstraction for
+In-Memory Cluster Computing</a></li>
+                                          <li><a href="https://spark.apache.org/">Spark Programming Guide</a></li>
                                           <li><a href="https://spark.apache.org/">Apache Spark Website</a></li>
-                                          <li><a href="https://github.com/datastax/spark-cassandra-connector">Datastax Spark Cassandra Connector</a></li>
+                                          <li><a href="https://github.com/datastax/spark-cassandra-connector#documentation">Datastax Spark Cassandra Connector Documentation</a></li>
                                         </ul>
 				</section>
 
